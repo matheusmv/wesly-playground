@@ -1,15 +1,18 @@
 import './styles.css';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import CodeEditor from '../../components/CodeEditor';
+import { DEMO } from '../../components/CodeEditor/utils';
 import FlexContainer from '../../components/FlexContainer';
+import Header from '../../components/Header';
 import Terminal from '../../components/Terminal';
 import { useTerminal } from '../../components/Terminal/hooks';
 import {
   DEFAULT_PANEL_HEIGHT,
   DEFAULT_PANEL_WIDTH,
 } from '../../components/Terminal/types';
+import { weslyWorker } from '../../workers';
 
 function Playground() {
   const { history, pushToHistory, setTerminalRef, resetTerminal } = useTerminal();
@@ -17,8 +20,14 @@ function Playground() {
   const [w, setW] = useState(DEFAULT_PANEL_WIDTH);
   const [h, setH] = useState(DEFAULT_PANEL_HEIGHT);
 
+  const workerCall = useCallback(async () => {
+    const results = await weslyWorker.run(DEMO);
+    results.forEach((result) => pushToHistory(result));
+  }, []);
+
   useEffect(() => {
     resetTerminal();
+    workerCall();
   }, []);
 
   const commands = useMemo(
@@ -55,6 +64,7 @@ function Playground() {
 
   return (
     <div className="playground">
+      <Header />
       <FlexContainer>
         <CodeEditor />
       </FlexContainer>

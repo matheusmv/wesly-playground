@@ -1,3 +1,3 @@
 # WESLY Playground
 
-...
+![](./preview.png)

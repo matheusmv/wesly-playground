@@ -1,0 +1,48 @@
+.header {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+}
+
+.app-update {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 500px;
+  z-index: 9999;
+}
+
+.app-update.app-update-visible {
+  display: block;
+}
+
+.header-preloader {
+  margin-right: 15px;
+}
+
+.header-logo {
+  height: 1.5em;
+  margin-left: 10px;
+}
+
+.header-command-bar {
+  flex: 1 1 auto;
+  max-width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .header-command-car .ms-command-bar {
+    padding: 0 10px;
+  }
+  .header-logo {
+    height: 1em;
+    margin: 0 10px;
+    display: none;
+  }
+}
