@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  TerminalHistory,
-  TerminalHistoryItem,
-  TerminalPushToHistoryWithDelayProps,
-} from './types';
+import { RootState } from '../../store';
+import { clearHistory, uptadeHistory } from '../../store/terminal/reducer';
+import { TerminalHistoryItem, TerminalPushToHistoryWithDelayProps } from './types';
 
 export function useTerminal() {
   const [terminalRef, setDomNode] = useState<HTMLDivElement>();
 
   const setTerminalRef = useCallback((node: HTMLDivElement) => setDomNode(node), []);
 
-  const [history, setHistory] = useState<TerminalHistory>([]);
+  const dispatch = useDispatch();
+  const { history } = useSelector((state: RootState) => state.terminalReduder);
 
   /**
    * Scroll to the bottom of the terminal when window is resized
@@ -42,7 +42,7 @@ export function useTerminal() {
   }, [history, terminalRef]);
 
   const pushToHistory = useCallback((item: TerminalHistoryItem) => {
-    setHistory((old) => [...old, item]);
+    dispatch(uptadeHistory(item));
   }, []);
 
   /**
@@ -67,7 +67,7 @@ export function useTerminal() {
    * Reset the terminal window
    */
   const resetTerminal = useCallback(() => {
-    setHistory([]);
+    dispatch(clearHistory());
   }, []);
 
   return {

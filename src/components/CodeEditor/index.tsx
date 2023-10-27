@@ -1,8 +1,11 @@
 import './styles.css';
 
 import { Editor, EditorProps } from '@monaco-editor/react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { DEMO, LANGUAGE } from './utils';
+import { RootState } from '../../store';
+import { sourceCodeChange } from '../../store/editor/reducer';
+import { LANGUAGE } from './utils';
 
 const options: EditorProps['options'] = {
   autoIndent: 'full',
@@ -27,7 +30,25 @@ const options: EditorProps['options'] = {
 };
 
 function CodeEditor() {
-  return <Editor language={LANGUAGE} value={DEMO} options={options} theme={'vs-dark'} />;
+  const dispatch = useDispatch();
+
+  const { sourceCode } = useSelector((state: RootState) => state.editorReducer);
+
+  const handleSourceCodeChange = (value: string | undefined, _ev: any) => {
+    if (value) {
+      dispatch(sourceCodeChange(value));
+    }
+  };
+
+  return (
+    <Editor
+      language={LANGUAGE}
+      value={sourceCode}
+      options={options}
+      theme={'vs-dark'}
+      onChange={handleSourceCodeChange}
+    />
+  );
 }
 
 export default CodeEditor;

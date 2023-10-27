@@ -1,8 +1,23 @@
 import './styles.css';
 
 import { CommandBar, ICommandBarItemProps } from '@fluentui/react';
+import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+
+import { RootState } from '../../store';
+import { weslyWorker } from '../../workers';
+import { useTerminal } from '../Terminal/hooks';
 
 function Header() {
+  const { sourceCode } = useSelector((state: RootState) => state.editorReducer);
+
+  const { pushToHistory } = useTerminal();
+
+  const workerCall = useCallback(async () => {
+    const results = await weslyWorker.run(sourceCode);
+    results.forEach((result) => pushToHistory(result));
+  }, [sourceCode]);
+
   const leftItems: ICommandBarItemProps[] = [
     {
       key: 'openFile',
@@ -20,7 +35,7 @@ function Header() {
       title: 'Run program (Ctrl+Enter)',
       iconProps: { iconName: 'Play' },
       onClick: () => {
-        // Lógica para executar o código
+        workerCall();
       },
     },
     {
@@ -29,8 +44,8 @@ function Header() {
       ariaLabel: 'Stop program (Ctrl+d)',
       title: 'Stop program (Ctrl+d)',
       iconProps: { iconName: 'Stop' },
-      onClick: () => {
-        // Lógica para executar o código
+      onClick: async () => {
+        // Lógica para encerrar a execução
       },
     },
     {

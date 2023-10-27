@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { usePrefersColorScheme } from '../../hooks/usePrefersColorScheme';
-import { RootReducer } from '../../store';
+import { RootState } from '../../store';
 import { SettingsState, toggleTheme } from '../../store/settings/reducer';
 import {
   getThemeFromVariant,
@@ -34,7 +34,7 @@ type CustomThemeProviderProps = ThemeProviderProps;
 function CustomThemeProvider({ children, ...props }: CustomThemeProviderProps) {
   const dispatch = useDispatch();
 
-  const settings = useSelector((state: RootReducer) => state.settingsReduder);
+  const settings = useSelector((state: RootState) => state.settingsReduder);
   const { currentTheme, matchMedia } = getInitialTheme(settings);
   const systemTheme = usePrefersColorScheme(currentTheme, matchMedia);
 
