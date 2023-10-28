@@ -11,10 +11,11 @@ import { useTerminal } from '../Terminal/hooks';
 function Header() {
   const { sourceCode } = useSelector((state: RootState) => state.editorReducer);
 
-  const { pushToHistory } = useTerminal();
+  const { pushToHistory, resetTerminal } = useTerminal();
 
   const workerCall = useCallback(async () => {
     const results = await weslyWorker.run(sourceCode);
+    resetTerminal();
     results.forEach((result) => pushToHistory(result));
   }, [sourceCode]);
 
