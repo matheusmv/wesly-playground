@@ -29,6 +29,22 @@ export function getWeslySnippets(
       range: range,
     },
     {
+      label: 'len',
+      kind: monaco.languages.CompletionItemKind.Function,
+      insertText: ['len($1);'].join('\n'),
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      documentation: 'Len Function',
+      range: range,
+    },
+    {
+      label: 'copy',
+      kind: monaco.languages.CompletionItemKind.Function,
+      insertText: ['copy($1);'].join('\n'),
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      documentation: 'Copy Function',
+      range: range,
+    },
+    {
       label: 'if',
       kind: monaco.languages.CompletionItemKind.Snippet,
       insertText: ['if (${1:condition}) {', '\t$0', '}'].join('\n'),
