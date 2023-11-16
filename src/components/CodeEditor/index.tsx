@@ -6,7 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../store';
 import { sourceCodeChange } from '../../store/editor/reducer';
-import { getWeslyMonarchTokensProvider, getWeslySnippets, LANGUAGE } from './utils';
+import {
+  getWeslyEditorTheme,
+  getWeslyLanguageConfiguration,
+  getWeslyMonarchTokensProvider,
+  getWeslySnippets,
+  LANGUAGE,
+} from './utils';
 
 const options: EditorProps['options'] = {
   autoIndent: 'full',
@@ -37,7 +43,7 @@ function CodeEditor() {
 
   const { sourceCode } = useSelector((state: RootState) => state.editorReducer);
 
-  const handleSourceCodeChange = (value: string | undefined, _ev: any) => {
+  const handleSourceCodeChange = (value: string | undefined, ev: any) => {
     if (value) {
       dispatch(sourceCodeChange(value));
     }
@@ -45,6 +51,10 @@ function CodeEditor() {
 
   useEffect(() => {
     monaco?.languages.register({ id: 'wesly' });
+    monaco?.languages.setLanguageConfiguration(
+      'wesly',
+      getWeslyLanguageConfiguration(monaco),
+    );
     monaco?.languages.setMonarchTokensProvider('wesly', getWeslyMonarchTokensProvider());
     monaco?.languages.registerCompletionItemProvider('wesly', {
       provideCompletionItems: (model, position) => {
@@ -52,6 +62,8 @@ function CodeEditor() {
         return { suggestions: suggestions };
       },
     });
+
+    monaco?.editor.defineTheme('wesly', getWeslyEditorTheme());
   }, [monaco]);
 
   return (

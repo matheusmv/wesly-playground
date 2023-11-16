@@ -147,6 +147,79 @@ export function getWeslySnippets(
   return suggestions;
 }
 
+export function getWeslyLanguageConfiguration(
+  monaco: Monaco,
+): languages.LanguageConfiguration {
+  return {
+    wordPattern:
+      /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+
+    comments: {
+      lineComment: '//',
+      blockComment: ['/*', '*/'],
+    },
+
+    brackets: [
+      ['{', '}'],
+      ['[', ']'],
+      ['(', ')'],
+    ],
+
+    onEnterRules: [
+      {
+        // e.g. /** | */
+        beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+        afterText: /^\s*\*\/$/,
+        action: {
+          indentAction: monaco.languages.IndentAction.IndentOutdent,
+          appendText: ' * ',
+        },
+      },
+      {
+        // e.g. /** ...|
+        beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+        action: {
+          indentAction: monaco.languages.IndentAction.None,
+          appendText: ' * ',
+        },
+      },
+      {
+        // e.g.  * ...|
+        beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
+        action: {
+          indentAction: monaco.languages.IndentAction.None,
+          appendText: '* ',
+        },
+      },
+      {
+        // e.g.  */|
+        beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
+        action: {
+          indentAction: monaco.languages.IndentAction.None,
+          removeText: 1,
+        },
+      },
+    ],
+
+    autoClosingPairs: [
+      { open: '{', close: '}' },
+      { open: '[', close: ']' },
+      { open: '(', close: ')' },
+      { open: '"', close: '"', notIn: ['string'] },
+      { open: "'", close: "'", notIn: ['string', 'comment'] },
+      { open: '`', close: '`', notIn: ['string', 'comment'] },
+      { open: '/**', close: ' */', notIn: ['string'] },
+    ],
+
+    folding: {
+      markers: {
+        start: /^\s*\/\/\s*#?region\b/,
+        end: /^\s*\/\/\s*#?endregion\b/,
+      },
+    },
+  };
+}
+
 export function getWeslyMonarchTokensProvider(): languages.IMonarchLanguage {
   return {
     defaultToken: 'invalid',
@@ -237,8 +310,7 @@ export function getWeslyMonarchTokensProvider(): languages.IMonarchLanguage {
             },
           },
         ],
-        [/[A-Z][\w$]*/, 'type.identifier'], // to show class names nicely
-        // [/[A-Z][\w\$]*/, 'identifier'],
+        [/[A-Z][\w\$]*/, 'type.identifier'], // to show class names nicely
 
         // whitespace
         { include: '@whitespace' },
@@ -361,5 +433,17 @@ export function getWeslyMonarchTokensProvider(): languages.IMonarchLanguage {
         { include: 'common' },
       ],
     },
+  };
+}
+
+export function getWeslyEditorTheme(): editor.IStandaloneThemeData {
+  return {
+    base: 'vs-dark',
+    inherit: true,
+    rules: [
+      { token: 'string.escape', foreground: 'D2BB85' },
+      { token: 'string.escape.invalid', foreground: 'DF5953' },
+    ],
+    colors: {},
   };
 }
